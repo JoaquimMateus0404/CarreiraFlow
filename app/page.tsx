@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import AboutModal from "@/components/AboutModal";
 
 // A marcação da aplicação (barra de ferramentas, editor de CV, editor de
 // Carta de Apresentação, modais) fica num ficheiro HTML próprio em
@@ -13,5 +14,10 @@ function getAppBodyHtml(): string {
 
 export default function Home() {
   const html = getAppBodyHtml();
-  return <div id="app-root" dangerouslySetInnerHTML={{ __html: html }} />;
+  return (
+    <>
+      <div id="app-root" dangerouslySetInnerHTML={{ __html: html }} />
+      <AboutModal />
+    </>
+  );
 }
