@@ -1,26 +1,6 @@
         /* =========================================================
-           TEMAS
+           TEMAS — agora em components/ThemeSwitcher.tsx
         ========================================================= */
-        const THEMES = {
-            classic: { primary:'#0f172a', accent:'#0284c7', sidebarBg:'#1e293b', sidebarText:'#f8fafc', bgBody:'#f1f5f9', badge:'#334155' },
-            amber:   { primary:'#1c1917', accent:'#b45309', sidebarBg:'#1c1917', sidebarText:'#fef3c7', bgBody:'#faf6f0', badge:'#44403c' },
-            emerald: { primary:'#052e2b', accent:'#0d9488', sidebarBg:'#052e2b', sidebarText:'#ecfdf5', bgBody:'#f0fdfa', badge:'#134e4a' },
-            violet:  { primary:'#1e1b2e', accent:'#7c3aed', sidebarBg:'#1e1b2e', sidebarText:'#f5f3ff', bgBody:'#f5f3ff', badge:'#312a4d' },
-            crimson: { primary:'#450a0a', accent:'#dc2626', sidebarBg:'#450a0a', sidebarText:'#fef2f2', bgBody:'#fef7f7', badge:'#7f1d1d' },
-            slate:   { primary:'#1e293b', accent:'#475569', sidebarBg:'#334155', sidebarText:'#f8fafc', bgBody:'#f8fafc', badge:'#475569' },
-        };
-
-        function applyTheme(name) {
-            const t = THEMES[name];
-            if (!t) return;
-            const root = document.documentElement.style;
-            root.setProperty('--primary-color', t.primary);
-            root.setProperty('--accent-color', t.accent);
-            root.setProperty('--sidebar-bg', t.sidebarBg);
-            root.setProperty('--sidebar-text', t.sidebarText);
-            root.setProperty('--bg-body', t.bgBody);
-            root.setProperty('--badge-bg', t.badge);
-        }
 
         /* =========================================================
            APLICAÇÕES (Currículo / Carta de Apresentação)
@@ -29,6 +9,7 @@
 
         function switchApp(app) {
             currentApp = app;
+            window.currentApp = app; // exposto para os componentes React lerem
             document.getElementById('app-cv').style.display = app === 'cv' ? 'block' : 'none';
             document.getElementById('app-letter').style.display = app === 'letter' ? 'block' : 'none';
             document.getElementById('toolbar-cv-controls').style.display = app === 'cv' ? 'flex' : 'none';
@@ -196,71 +177,29 @@
         }
 
         /* =========================================================
-           MODELOS (layout)
+           MODELOS (layout) — agora em components/TemplateSwitcher.tsx
         ========================================================= */
-        function applyTemplate(name) {
-            document.getElementById('cv-root').setAttribute('data-template', name);
-        }
 
         /* =========================================================
-           SELETOR DE ÍCONES (Contato / Informações Pessoais / Idiomas)
+           SELETOR DE ÍCONES — agora em components/IconPicker.tsx
+           (o alvo #icon-picker no HTML serve de "portal" para o React)
         ========================================================= */
-        const ICON_OPTIONS = [
-            'fa-solid fa-envelope', 'fa-solid fa-phone', 'fa-solid fa-mobile-screen',
-            'fa-solid fa-location-dot', 'fa-solid fa-house', 'fa-solid fa-globe',
-            'fa-solid fa-link', 'fa-brands fa-linkedin', 'fa-brands fa-github',
-            'fa-brands fa-x-twitter', 'fa-brands fa-instagram', 'fa-brands fa-facebook',
-            'fa-brands fa-whatsapp', 'fa-brands fa-telegram', 'fa-solid fa-calendar',
-            'fa-solid fa-flag', 'fa-solid fa-user', 'fa-solid fa-id-card',
-            'fa-solid fa-briefcase', 'fa-solid fa-graduation-cap', 'fa-solid fa-car',
-            'fa-solid fa-clock', 'fa-solid fa-map', 'fa-solid fa-heart',
-            'fa-solid fa-star', 'fa-solid fa-circle-info', 'fa-solid fa-language',
-            'fa-brands fa-behance', 'fa-brands fa-dribbble', 'fa-solid fa-building'
-        ];
-
-        let iconPickerTarget = null;
-
-        function buildIconPicker() {
-            const picker = document.getElementById('icon-picker');
-            picker.innerHTML = ICON_OPTIONS.map(cls =>
-                `<button type="button" onclick="selectIcon('${cls}')"><i class="${cls}"></i></button>`
-            ).join('');
-        }
-
         function openIconPicker(iconEl, event) {
             event.stopPropagation();
-            if (!document.getElementById('icon-picker').innerHTML) buildIconPicker();
-            iconPickerTarget = iconEl;
-            const picker = document.getElementById('icon-picker');
             const rect = iconEl.getBoundingClientRect();
-            picker.style.display = 'grid';
-            const top = window.scrollY + rect.bottom + 6;
-            let left = window.scrollX + rect.left;
-            const maxLeft = window.scrollX + document.documentElement.clientWidth - 240;
-            if (left > maxLeft) left = maxLeft;
-            picker.style.top = top + 'px';
-            picker.style.left = left + 'px';
-        }
-
-        function selectIcon(cls) {
-            if (iconPickerTarget) {
-                iconPickerTarget.className = cls + ' editable-icon';
-            }
-            closeIconPicker();
+            window.dispatchEvent(new CustomEvent('open-icon-picker', {
+                detail: {
+                    target: iconEl,
+                    top: window.scrollY + rect.bottom + 6,
+                    left: window.scrollX + rect.left
+                }
+            }));
         }
 
         function closeIconPicker() {
-            const picker = document.getElementById('icon-picker');
-            if (picker) picker.style.display = 'none';
-            iconPickerTarget = null;
+            window.dispatchEvent(new CustomEvent('close-icon-picker'));
         }
 
-        document.addEventListener('click', function (e) {
-            const picker = document.getElementById('icon-picker');
-            if (picker && picker.style.display !== 'none' && !picker.contains(e.target) && !e.target.classList.contains('editable-icon')) {
-                closeIconPicker();
-            }
-        });
         window.addEventListener('beforeprint', closeIconPicker);
 
         /* =========================================================
@@ -440,33 +379,10 @@
             URL.revokeObjectURL(url);
         }
         /* =========================================================
-           RASCUNHOS (armazenamento local do navegador)
-           Nota: isto usa localStorage do navegador, por isso funciona
-           quando abre este ficheiro .html diretamente (fica guardado
-           neste computador/navegador). Use "Exportar cópia de segurança"
-           para levar os seus rascunhos para outro dispositivo.
+           RASCUNHOS — agora em components/DraftsModal.tsx
+           (getThemeVars/applyThemeVars ficam aqui também, porque a
+           gravação automática mais abaixo continua a precisar delas)
         ========================================================= */
-        const DRAFTS_KEY = 'cvbuilder_profiles_v1';
-        let currentDraftId = null;
-
-        function getDrafts() {
-            try {
-                return JSON.parse(localStorage.getItem(DRAFTS_KEY)) || [];
-            } catch (e) {
-                return [];
-            }
-        }
-
-        function saveDrafts(drafts) {
-            try {
-                localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
-                return true;
-            } catch (e) {
-                alert('Não foi possível guardar: o armazenamento local está cheio ou indisponível neste navegador.');
-                return false;
-            }
-        }
-
         function getThemeVars() {
             const cs = document.documentElement.style;
             const props = ['--primary-color', '--accent-color', '--sidebar-bg', '--sidebar-text', '--bg-body', '--badge-bg'];
@@ -482,144 +398,20 @@
         }
 
         function openDraftsModal() {
-            document.getElementById('draft-name-input').value = '';
-            renderDraftsList();
-            new bootstrap.Modal(document.getElementById('draftsModal')).show();
-        }
-
-        function renderDraftsList() {
-            const drafts = getDrafts().sort((a, b) => b.savedAt.localeCompare(a.savedAt));
-            const list = document.getElementById('drafts-list');
-            const empty = document.getElementById('drafts-empty');
-            if (!drafts.length) {
-                list.innerHTML = '';
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-            list.innerHTML = drafts.map(d => {
-                const typeLabel = d.type === 'letter' ? 'Carta' : 'Currículo';
-                const date = new Date(d.savedAt).toLocaleString('pt-PT', { dateStyle: 'short', timeStyle: 'short' });
-                return `
-                    <div class="draft-item">
-                        <span class="badge text-bg-secondary">${typeLabel}</span>
-                        <span class="draft-name">${d.name}</span>
-                        <span class="draft-meta">${date}</span>
-                        <button class="btn btn-sm btn-outline-primary" onclick="loadDraft('${d.id}')"><i class="fa-solid fa-folder-open"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteDraft('${d.id}')"><i class="fa-solid fa-trash"></i></button>
-                    </div>`;
-            }).join('');
-        }
-
-        function saveCurrentAsDraft() {
-            const nameInput = document.getElementById('draft-name-input');
-            let name = nameInput.value.trim();
-            if (!name) {
-                name = (currentApp === 'letter' ? 'Carta' : 'CV') + ' - ' + new Date().toLocaleDateString('pt-PT');
-            }
-            const rootId = currentApp === 'letter' ? 'letter-root' : 'cv-root';
-            const root = document.getElementById(rootId);
-            const draft = {
-                id: 'd' + Date.now(),
-                name,
-                type: currentApp,
-                savedAt: new Date().toISOString(),
-                template: root.dataset.template || null,
-                themeVars: getThemeVars(),
-                html: root.innerHTML
-            };
-            const drafts = getDrafts();
-            drafts.push(draft);
-            if (saveDrafts(drafts)) {
-                currentDraftId = draft.id;
-                nameInput.value = '';
-                renderDraftsList();
-            }
-        }
-
-        function loadDraft(id) {
-            const drafts = getDrafts();
-            const draft = drafts.find(d => d.id === id);
-            if (!draft) return;
-            if (!confirm('Carregar "' + draft.name + '"? As alterações não guardadas no documento atual serão perdidas.')) return;
-
-            switchApp(draft.type);
-            const rootId = draft.type === 'letter' ? 'letter-root' : 'cv-root';
-            const root = document.getElementById(rootId);
-            root.innerHTML = draft.html;
-            if (draft.template) root.setAttribute('data-template', draft.template);
-            applyThemeVars(draft.themeVars);
-            currentDraftId = draft.id;
-            bootstrap.Modal.getInstance(document.getElementById('draftsModal'))?.hide();
-        }
-
-        function deleteDraft(id) {
-            if (!confirm('Remover este rascunho? Esta ação não pode ser desfeita.')) return;
-            const drafts = getDrafts().filter(d => d.id !== id);
-            saveDrafts(drafts);
-            renderDraftsList();
-        }
-
-        function exportBackup() {
-            const drafts = getDrafts();
-            if (!drafts.length) { alert('Não há rascunhos para exportar.'); return; }
-            const blob = new Blob([JSON.stringify(drafts, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'rascunhos_backup.json';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-        }
-
-        function importBackup(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (!Array.isArray(imported)) throw new Error('formato inválido');
-                    const existing = getDrafts();
-                    const existingIds = new Set(existing.map(d => d.id));
-                    const merged = existing.concat(imported.filter(d => !existingIds.has(d.id)));
-                    if (saveDrafts(merged)) {
-                        renderDraftsList();
-                        alert('Rascunhos importados com sucesso.');
-                    }
-                } catch (err) {
-                    alert('Não foi possível ler este ficheiro de cópia de segurança.');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
+            window.dispatchEvent(new CustomEvent('open-drafts-modal'));
         }
 
         /* =========================================================
-           MODAL "SOBRE / APOIAR" — mostrado ao carregar a página
+           MODAL "SOBRE / APOIAR" — agora é um componente React
+           (components/AboutModal.tsx). Esta função fica apenas como
+           ponte: o botão "Sobre" na barra de ferramentas continua a
+           chamar openAboutModal(), que só avisa o React para abrir.
+           A auto-abertura ao carregar a página e a lógica de "não
+           mostrar novamente" já vivem dentro do componente React.
         ========================================================= */
-        const ABOUT_SEEN_KEY = 'cvbuilder_hide_about';
-
         function openAboutModal() {
-            new bootstrap.Modal(document.getElementById('aboutModal')).show();
+            window.dispatchEvent(new CustomEvent('open-about-modal'));
         }
-
-        function handleAboutClose() {
-            const checkbox = document.getElementById('dont-show-again');
-            if (checkbox && checkbox.checked) {
-                localStorage.setItem(ABOUT_SEEN_KEY, '1');
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            let hide = false;
-            try { hide = localStorage.getItem(ABOUT_SEEN_KEY) === '1'; } catch (e) { hide = false; }
-            if (!hide) {
-                setTimeout(() => { openAboutModal(); }, 300);
-            }
-        });
 
         /* =========================================================
            GRAVAÇÃO AUTOMÁTICA (a cada 90 segundos)

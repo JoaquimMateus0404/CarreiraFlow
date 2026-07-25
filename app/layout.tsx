@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "CarreiraFlow — Currículo & Carta de Apresentação",
+  title: "Gerador de Documentos — Currículo & Carta de Apresentação",
   description:
     "Ferramenta gratuita e de código aberto para criar currículos e cartas de apresentação profissionais, com exportação em PDF.",
 };

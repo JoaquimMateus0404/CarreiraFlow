@@ -1,86 +1,15 @@
 
-    <!-- =========================================================
-         MODAL: SOBRE / APOIAR O PROJETO
+    <!-- Modal "Sobre / Apoiar" agora é um componente React real:
+         ver components/AboutModal.tsx (montado em app/page.tsx) -->
 
-    Modal "Sobre / Apoiar" agora é um componente React real:
-         ver components/AboutModal.tsx (montado em app/page.tsx) 
-    ========================================================= -->
-   <!--  <div class="modal fade" id="aboutModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Sobre esta ferramenta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Esta é uma ferramenta <strong>gratuita e de código aberto</strong>, criada para ajudar estudantes e profissionais a criar currículos e cartas de apresentação com aparência profissional — sem custos, sem anúncios e sem necessidade de conta. Os seus dados ficam guardados apenas no seu próprio navegador.</p>
-                    <p class="mb-2">Pode gerar tanto o <strong>Currículo</strong> como a <strong>Carta de Apresentação</strong> (use os separadores no topo), guardar rascunhos para continuar mais tarde, e exportar em PDF pronto a enviar.</p>
-                    <hr>
-                    <p class="mb-2">Se esta ferramenta foi útil para si, considere apoiar a sua manutenção e o desenvolvimento de novas funcionalidades:</p>
-                    <div class="support-field">
-                        <span class="support-label">IBAN</span>
-                        <span contenteditable="true">AO06 0000 0000 0000 0000 0000 0</span>
-                    </div>
-                    <div class="support-field">
-                        <span class="support-label">Nº de Conta</span>
-                        <span contenteditable="true">19253082610001</span>
-                    </div>
-                    <div class="support-field">
-                        <span class="support-label">Multicaixa Express</span>
-                        <span contenteditable="true">933 855 723</span>
-                    </div>
-                    <div class="form-check mt-3">
-                        <input class="form-check-input" type="checkbox" id="dont-show-again">
-                        <label class="form-check-label" for="dont-show-again" style="font-size:0.85rem;">Não mostrar esta mensagem novamente</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="handleAboutClose()">Continuar para a ferramenta</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- =========================================================
-         MODAL: RASCUNHOS / PERFIS GUARDADOS
-    ========================================================= -->
-    <div class="modal fade" id="draftsModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fa-solid fa-clock-rotate-left me-2"></i>Rascunhos guardados</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex gap-2 mb-3">
-                        <input type="text" id="draft-name-input" class="form-control" placeholder="Nome para este rascunho (ex: CV Marketing 2026)">
-                        <button class="btn btn-primary text-nowrap" onclick="saveCurrentAsDraft()">
-                            <i class="fa-solid fa-floppy-disk me-1"></i>Guardar atual
-                        </button>
-                    </div>
-                    <div id="drafts-list"></div>
-                    <p id="drafts-empty" class="text-muted small mb-0" style="display:none;">Ainda não tem rascunhos guardados neste navegador.</p>
-                    <hr>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-sm btn-outline-secondary" onclick="exportBackup()">
-                            <i class="fa-solid fa-download me-1"></i>Exportar cópia de segurança (.json)
-                        </button>
-                        <label class="btn btn-sm btn-outline-secondary mb-0">
-                            <i class="fa-solid fa-upload me-1"></i>Importar cópia de segurança
-                            <input type="file" accept=".json" hidden onchange="importBackup(event)">
-                        </label>
-                    </div>
-                    <p class="text-muted mt-2 mb-0" style="font-size:0.78rem;">Os rascunhos ficam guardados neste navegador (armazenamento local). Se limpar os dados do navegador ou mudar de computador, use a cópia de segurança para não os perder.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Modal "Rascunhos" agora é um componente React real:
+         ver components/DraftsModal.tsx (montado em app/page.tsx) -->
 
     <!-- =========================================================
          BARRA DE FERRAMENTAS DO EDITOR (não aparece na impressão)
     ========================================================= -->
     <div class="editor-toolbar no-print">
-        <span class="brand"><i class="fa-solid fa-pen-ruler me-1"></i> CarreiraFlow</span>
+        <span class="brand"><i class="fa-solid fa-pen-ruler me-1"></i> Gerador de Documentos</span>
 
         <div class="btn-group" role="group">
             <button class="btn btn-sm btn-light" id="tab-cv" onclick="switchApp('cv')">
@@ -112,27 +41,7 @@
             </ul>
         </div>
 
-        <div class="dropdown">
-            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-table-columns me-1"></i>Modelo
-            </button>
-            <ul class="dropdown-menu p-2" style="min-width: 240px;">
-                <div class="d-flex gap-2 flex-wrap px-1">
-                    <button class="template-swatch" title="Clássico" onclick="applyTemplate('classico')">
-                        <span class="ts-side"></span><span class="ts-main"></span>
-                    </button>
-                    <button class="template-swatch" title="Moderno" onclick="applyTemplate('moderno')">
-                        <span class="ts-main"></span><span class="ts-side ts-light"></span>
-                    </button>
-                    <button class="template-swatch" title="Minimalista" onclick="applyTemplate('minimalista')">
-                        <span class="ts-side ts-light"></span><span class="ts-main"></span>
-                    </button>
-                    <button class="template-swatch ts-column" title="Executivo" onclick="applyTemplate('executivo')">
-                        <span class="ts-top"></span><span class="ts-bottom"></span>
-                    </button>
-                </div>
-            </ul>
-        </div>
+        <span id="template-switcher-slot"></span>
 
         <button class="btn btn-outline-light" onclick="toggleReferences()">
             <i class="fa-solid fa-eye me-1"></i>Mostrar/Ocultar Referências
@@ -145,21 +54,7 @@
             </button>
         </span>
 
-        <div class="dropdown">
-            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-palette me-1"></i>Tema
-            </button>
-            <ul class="dropdown-menu p-2" style="min-width: 220px;">
-                <div class="d-flex gap-2 flex-wrap px-1">
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1e293b 50%,#0284c7 50%)" title="Azul Clássico" onclick="applyTheme('classic')"></button>
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1c1917 50%,#b45309 50%)" title="Âmbar Executivo" onclick="applyTheme('amber')"></button>
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#052e2b 50%,#0d9488 50%)" title="Verde Esmeralda" onclick="applyTheme('emerald')"></button>
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1e1b2e 50%,#7c3aed 50%)" title="Roxo Moderno" onclick="applyTheme('violet')"></button>
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#450a0a 50%,#dc2626 50%)" title="Vermelho Bordô" onclick="applyTheme('crimson')"></button>
-                    <button class="theme-swatch" style="background:linear-gradient(135deg,#334155 50%,#64748b 50%)" title="Cinza Minimalista" onclick="applyTheme('slate')"></button>
-                </div>
-            </ul>
-        </div>
+        <span id="theme-switcher-slot"></span>
 
         <button class="btn btn-outline-light" onclick="openDraftsModal()">
             <i class="fa-solid fa-clock-rotate-left me-1"></i>Rascunhos
@@ -461,7 +356,7 @@
                     <p contenteditable="true">email.profissional@exemplo.com | +244 923 000 000</p>
                     <p contenteditable="true">Luanda, Angola</p>
                 </div>
-                <div class="letter-date" contenteditable="true">Luanda, 20 de julho de 2026</div>
+                <div class="letter-date" contenteditable="true">Luanda, 24 de julho de 2026</div>
             </div>
 
             <div class="letter-recipient" contenteditable="true">
