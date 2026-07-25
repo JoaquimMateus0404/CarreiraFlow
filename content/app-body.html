@@ -1,0 +1,489 @@
+
+    <!-- =========================================================
+         MODAL: SOBRE / APOIAR O PROJETO
+    ========================================================= -->
+    <div class="modal fade" id="aboutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sobre esta ferramenta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Esta é uma ferramenta <strong>gratuita e de código aberto</strong>, criada para ajudar estudantes e profissionais a criar currículos e cartas de apresentação com aparência profissional — sem custos, sem anúncios e sem necessidade de conta. Os seus dados ficam guardados apenas no seu próprio navegador.</p>
+                    <p class="mb-2">Pode gerar tanto o <strong>Currículo</strong> como a <strong>Carta de Apresentação</strong> (use os separadores no topo), guardar rascunhos para continuar mais tarde, e exportar em PDF pronto a enviar.</p>
+                    <hr>
+                    <p class="mb-2">Se esta ferramenta foi útil para si, considere apoiar a sua manutenção e o desenvolvimento de novas funcionalidades:</p>
+                    <div class="support-field">
+                        <span class="support-label">IBAN</span>
+                        <span contenteditable="true">AO06 0000 0000 0000 0000 0000 0</span>
+                    </div>
+                    <div class="support-field">
+                        <span class="support-label">Nº de Conta</span>
+                        <span contenteditable="true">19253082610001</span>
+                    </div>
+                    <div class="support-field">
+                        <span class="support-label">Multicaixa Express</span>
+                        <span contenteditable="true">933 855 723</span>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="dont-show-again">
+                        <label class="form-check-label" for="dont-show-again" style="font-size:0.85rem;">Não mostrar esta mensagem novamente</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="handleAboutClose()">Continuar para a ferramenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         MODAL: RASCUNHOS / PERFIS GUARDADOS
+    ========================================================= -->
+    <div class="modal fade" id="draftsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fa-solid fa-clock-rotate-left me-2"></i>Rascunhos guardados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex gap-2 mb-3">
+                        <input type="text" id="draft-name-input" class="form-control" placeholder="Nome para este rascunho (ex: CV Marketing 2026)">
+                        <button class="btn btn-primary text-nowrap" onclick="saveCurrentAsDraft()">
+                            <i class="fa-solid fa-floppy-disk me-1"></i>Guardar atual
+                        </button>
+                    </div>
+                    <div id="drafts-list"></div>
+                    <p id="drafts-empty" class="text-muted small mb-0" style="display:none;">Ainda não tem rascunhos guardados neste navegador.</p>
+                    <hr>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="exportBackup()">
+                            <i class="fa-solid fa-download me-1"></i>Exportar cópia de segurança (.json)
+                        </button>
+                        <label class="btn btn-sm btn-outline-secondary mb-0">
+                            <i class="fa-solid fa-upload me-1"></i>Importar cópia de segurança
+                            <input type="file" accept=".json" hidden onchange="importBackup(event)">
+                        </label>
+                    </div>
+                    <p class="text-muted mt-2 mb-0" style="font-size:0.78rem;">Os rascunhos ficam guardados neste navegador (armazenamento local). Se limpar os dados do navegador ou mudar de computador, use a cópia de segurança para não os perder.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         BARRA DE FERRAMENTAS DO EDITOR (não aparece na impressão)
+    ========================================================= -->
+    <div class="editor-toolbar no-print">
+        <span class="brand"><i class="fa-solid fa-pen-ruler me-1"></i> CarreiraFlow</span>
+
+        <div class="btn-group" role="group">
+            <button class="btn btn-sm btn-light" id="tab-cv" onclick="switchApp('cv')">
+                <i class="fa-solid fa-file-lines me-1"></i>Currículo
+            </button>
+            <button class="btn btn-sm btn-outline-light" id="tab-letter" onclick="switchApp('letter')">
+                <i class="fa-solid fa-envelope-open-text me-1"></i>Carta de Apresentação
+            </button>
+        </div>
+
+        <span id="toolbar-cv-controls" class="d-flex gap-2 flex-wrap align-items-center">
+        <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-plus me-1"></i>Adicionar
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item" onclick="addExperience()">Experiência profissional</button></li>
+                <li><button class="dropdown-item" onclick="addEducation()">Formação académica</button></li>
+                <li><button class="dropdown-item" onclick="addProject()">Projeto em destaque</button></li>
+                <li><button class="dropdown-item" onclick="addCertification()">Certificação</button></li>
+                <li><button class="dropdown-item" onclick="addSkill()">Competência (badge)</button></li>
+                <li><button class="dropdown-item" onclick="addSoftware()">Software (com nível)</button></li>
+                <li><button class="dropdown-item" onclick="addContact()">Linha de contacto</button></li>
+                <li><button class="dropdown-item" onclick="addPersonalInfo()">Informação pessoal</button></li>
+                <li><button class="dropdown-item" onclick="addLanguage()">Idioma</button></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item" onclick="addSection('sidebar')">Nova secção (barra lateral)</button></li>
+                <li><button class="dropdown-item" onclick="addSection('main')">Nova secção (conteúdo principal)</button></li>
+            </ul>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-table-columns me-1"></i>Modelo
+            </button>
+            <ul class="dropdown-menu p-2" style="min-width: 240px;">
+                <div class="d-flex gap-2 flex-wrap px-1">
+                    <button class="template-swatch" title="Clássico" onclick="applyTemplate('classico')">
+                        <span class="ts-side"></span><span class="ts-main"></span>
+                    </button>
+                    <button class="template-swatch" title="Moderno" onclick="applyTemplate('moderno')">
+                        <span class="ts-main"></span><span class="ts-side ts-light"></span>
+                    </button>
+                    <button class="template-swatch" title="Minimalista" onclick="applyTemplate('minimalista')">
+                        <span class="ts-side ts-light"></span><span class="ts-main"></span>
+                    </button>
+                    <button class="template-swatch ts-column" title="Executivo" onclick="applyTemplate('executivo')">
+                        <span class="ts-top"></span><span class="ts-bottom"></span>
+                    </button>
+                </div>
+            </ul>
+        </div>
+
+        <button class="btn btn-outline-light" onclick="toggleReferences()">
+            <i class="fa-solid fa-eye me-1"></i>Mostrar/Ocultar Referências
+        </button>
+        </span>
+
+        <span id="toolbar-letter-controls" class="d-flex gap-2 flex-wrap align-items-center" style="display:none;">
+            <button class="btn btn-outline-light" onclick="addLetterParagraph()">
+                <i class="fa-solid fa-plus me-1"></i>Adicionar parágrafo
+            </button>
+        </span>
+
+        <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-palette me-1"></i>Tema
+            </button>
+            <ul class="dropdown-menu p-2" style="min-width: 220px;">
+                <div class="d-flex gap-2 flex-wrap px-1">
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1e293b 50%,#0284c7 50%)" title="Azul Clássico" onclick="applyTheme('classic')"></button>
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1c1917 50%,#b45309 50%)" title="Âmbar Executivo" onclick="applyTheme('amber')"></button>
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#052e2b 50%,#0d9488 50%)" title="Verde Esmeralda" onclick="applyTheme('emerald')"></button>
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#1e1b2e 50%,#7c3aed 50%)" title="Roxo Moderno" onclick="applyTheme('violet')"></button>
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#450a0a 50%,#dc2626 50%)" title="Vermelho Bordô" onclick="applyTheme('crimson')"></button>
+                    <button class="theme-swatch" style="background:linear-gradient(135deg,#334155 50%,#64748b 50%)" title="Cinza Minimalista" onclick="applyTheme('slate')"></button>
+                </div>
+            </ul>
+        </div>
+
+        <button class="btn btn-outline-light" onclick="openDraftsModal()">
+            <i class="fa-solid fa-clock-rotate-left me-1"></i>Rascunhos
+        </button>
+        <button class="btn btn-outline-light" onclick="openAboutModal()" title="Sobre / Apoiar este projeto">
+            <i class="fa-solid fa-circle-info"></i>
+        </button>
+
+        <div class="ms-auto d-flex gap-2 align-items-center">
+            <span id="autosave-indicator" class="no-print" style="font-size:0.72rem; color:rgba(255,255,255,0.55); opacity:0; transition:opacity .4s;"></span>
+            <button class="btn btn-success" onclick="exportHTML()">
+                <i class="fa-solid fa-floppy-disk me-1"></i>Guardar (.html)
+            </button>
+            <button onclick="window.print()" class="btn btn-outline-light" title="Alternativa: caixa de impressão do navegador">
+                <i class="fa-solid fa-print me-1"></i>Imprimir
+            </button>
+            <button id="export-pdf-btn" onclick="exportPDF()" class="btn btn-primary">
+                <i class="fa-solid fa-file-pdf me-1"></i>Exportar PDF
+            </button>
+        </div>
+    </div>
+    <div class="editor-hint no-print">
+        Clique em qualquer texto para editar. Clique num ícone da barra lateral para trocá-lo. Passe o mouse sobre um item ou secção para ver o botão vermelho de remover.
+    </div>
+    <div id="autosave-banner" class="no-print" style="display:none; align-items:center; gap:12px; background:#fef9c3; border-bottom:1px solid #fde68a; color:#713f12; font-size:0.85rem; padding:8px 18px; justify-content:center;">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span id="autosave-banner-text"></span>
+        <button class="btn btn-sm btn-warning" onclick="restoreAutosave()">Restaurar</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="dismissAutosaveBanner()">Ignorar</button>
+    </div>
+
+    <div id="app-cv" class="app-view">
+    <div class="container">
+        <div class="cv-card" id="cv-root" data-template="classico">
+            <div class="row g-0">
+
+                <!-- =========================================================
+                     PAINEL LATERAL (ESQUERDA)
+                ========================================================= -->
+                <div class="col-md-4 sidebar" id="sidebar-area">
+
+                    <!-- Foto de Perfil -->
+                    <div id="photo-block">
+                        <div class="photo-controls no-print">
+                            <label class="btn btn-outline-light">
+                                <i class="fa-solid fa-camera me-1"></i>Alterar foto
+                                <input type="file" accept="image/*" id="photo-input" hidden onchange="handlePhotoUpload(event)">
+                            </label>
+                            <button class="btn btn-outline-danger" onclick="removePhoto()"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <div class="profile-img-container" id="profile-img-container">
+                            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'><rect width='150' height='150' fill='%231e293b'/><circle cx='75' cy='58' r='28' fill='%2394a3b8'/><path d='M18 152c0-37 24-57 57-57s57 20 57 57' fill='%2394a3b8'/></svg>" alt="Foto de Perfil" class="profile-img" id="profile-img">
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-light no-print mb-3" id="restore-photo-btn" style="display:none;" onclick="restorePhoto()">
+                        <i class="fa-solid fa-image me-1"></i>Adicionar foto
+                    </button>
+
+                    <!-- Contatos -->
+                    <div class="section-block" data-min="1">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h2>Contato</h2>
+                        <ul class="list-unstyled info-list" id="contact-list">
+                            <li class="info-item"><i class="fa-solid fa-envelope editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">email.profissional@exemplo.com</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-phone editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">+244 923 000 000</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-location-dot editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">Luanda, Angola</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-brands fa-linkedin editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">linkedin.com/in/seu-perfil</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-brands fa-github editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">github.com/seu-usuario</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                        </ul>
+                        <button class="add-inline-btn no-print" onclick="addContact()"><i class="fa-solid fa-plus me-1"></i>Contacto</button>
+                    </div>
+
+                    <!-- Informações Pessoais -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h2>Informações Pessoais</h2>
+                        <ul class="list-unstyled info-list" id="personal-info-list">
+                            <li class="info-item"><i class="fa-solid fa-calendar editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">15 de Maio de 1995</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-flag editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">Angolana</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-user editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">Solteiro(a)</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-id-card editable-icon" onclick="openIconPicker(this,event)"></i><span contenteditable="true">Carta de Condução: Ligeiro</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                        </ul>
+                        <button class="add-inline-btn no-print" onclick="addPersonalInfo()"><i class="fa-solid fa-plus me-1"></i>Campo</button>
+                    </div>
+
+                    <!-- Habilidades Técnicas -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h2>Competências</h2>
+                        <div id="skills-list">
+                            <span class="badge-skill" contenteditable="true">JavaScript / ES6+<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">HTML5 & CSS3<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">Bootstrap 5<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">Node.js<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">Git & GitHub<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">SQL / PostgreSQL<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                            <span class="badge-skill" contenteditable="true">Figma (UI/UX)<button class="item-delete no-print" onclick="removeSkill(this)">×</button></span>
+                        </div>
+                        <button class="add-inline-btn no-print" onclick="addSkill()"><i class="fa-solid fa-plus me-1"></i>Competência</button>
+                    </div>
+
+                    <!-- Idiomas -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h2>Idiomas</h2>
+                        <ul class="list-unstyled info-list" id="languages-list">
+                            <li class="info-item"><i class="fa-solid fa-globe editable-icon" onclick="openIconPicker(this,event)"></i> <strong>Português:</strong>&nbsp;<span contenteditable="true">Nativo</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-globe editable-icon" onclick="openIconPicker(this,event)"></i> <strong>Inglês:</strong>&nbsp;<span contenteditable="true">Avançado (C1)</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                            <li class="info-item"><i class="fa-solid fa-globe editable-icon" onclick="openIconPicker(this,event)"></i> <strong>Espanhol:</strong>&nbsp;<span contenteditable="true">Intermediário</span><button class="item-delete no-print" onclick="removeItem(this)">×</button></li>
+                        </ul>
+                        <button class="add-inline-btn no-print" onclick="addLanguage()"><i class="fa-solid fa-plus me-1"></i>Idioma</button>
+                    </div>
+
+                    <!-- Softwares (nível de domínio) -->
+                    <div class="section-block" id="software-section">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h2>Softwares
+                            <button class="software-style-toggle no-print" onclick="toggleSoftwareStyle()" title="Alternar entre estrelas e barra de progresso">
+                                <i class="fa-solid fa-repeat"></i>
+                            </button>
+                        </h2>
+                        <div id="software-list" data-style="stars">
+                            <div class="software-item" data-level="4">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <span class="software-name" contenteditable="true">Adobe Photoshop</span>
+                                <div class="software-stars" style="display:flex;">
+                                    <i class="fa-solid fa-star" data-val="1" onclick="setStarLevel(this,1)"></i>
+                                    <i class="fa-solid fa-star" data-val="2" onclick="setStarLevel(this,2)"></i>
+                                    <i class="fa-solid fa-star" data-val="3" onclick="setStarLevel(this,3)"></i>
+                                    <i class="fa-solid fa-star" data-val="4" onclick="setStarLevel(this,4)"></i>
+                                    <i class="fa-regular fa-star" data-val="5" onclick="setStarLevel(this,5)"></i>
+                                </div>
+                                <div class="software-bar" style="display:none;">
+                                    <div class="software-bar-track"><div class="software-bar-fill" style="width:80%"></div></div>
+                                    <input type="range" class="no-print software-slider" min="0" max="100" value="80" oninput="updateBarFill(this)">
+                                </div>
+                            </div>
+                            <div class="software-item" data-level="5">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <span class="software-name" contenteditable="true">Microsoft Excel</span>
+                                <div class="software-stars" style="display:flex;">
+                                    <i class="fa-solid fa-star" data-val="1" onclick="setStarLevel(this,1)"></i>
+                                    <i class="fa-solid fa-star" data-val="2" onclick="setStarLevel(this,2)"></i>
+                                    <i class="fa-solid fa-star" data-val="3" onclick="setStarLevel(this,3)"></i>
+                                    <i class="fa-solid fa-star" data-val="4" onclick="setStarLevel(this,4)"></i>
+                                    <i class="fa-solid fa-star" data-val="5" onclick="setStarLevel(this,5)"></i>
+                                </div>
+                                <div class="software-bar" style="display:none;">
+                                    <div class="software-bar-track"><div class="software-bar-fill" style="width:100%"></div></div>
+                                    <input type="range" class="no-print software-slider" min="0" max="100" value="100" oninput="updateBarFill(this)">
+                                </div>
+                            </div>
+                            <div class="software-item" data-level="3">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <span class="software-name" contenteditable="true">AutoCAD</span>
+                                <div class="software-stars" style="display:flex;">
+                                    <i class="fa-solid fa-star" data-val="1" onclick="setStarLevel(this,1)"></i>
+                                    <i class="fa-solid fa-star" data-val="2" onclick="setStarLevel(this,2)"></i>
+                                    <i class="fa-solid fa-star" data-val="3" onclick="setStarLevel(this,3)"></i>
+                                    <i class="fa-regular fa-star" data-val="4" onclick="setStarLevel(this,4)"></i>
+                                    <i class="fa-regular fa-star" data-val="5" onclick="setStarLevel(this,5)"></i>
+                                </div>
+                                <div class="software-bar" style="display:none;">
+                                    <div class="software-bar-track"><div class="software-bar-fill" style="width:60%"></div></div>
+                                    <input type="range" class="no-print software-slider" min="0" max="100" value="60" oninput="updateBarFill(this)">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="add-inline-btn no-print" onclick="addSoftware()"><i class="fa-solid fa-plus me-1"></i>Software</button>
+                    </div>
+
+                </div>
+
+                <!-- =========================================================
+                     CONTEÚDO PRINCIPAL (DIREITA)
+                ========================================================= -->
+                <div class="col-md-8 main-content" id="main-area">
+
+                    <!-- Cabeçalho -->
+                    <div class="cv-header">
+                        <h1 class="mb-0" contenteditable="true">SEU NOME COMPLETO</h1>
+                        <span class="job-title-badge" contenteditable="true">Desenvolvedor Web Full Stack / Engenheiro de Software</span>
+                    </div>
+
+                    <!-- Perfil Profissional -->
+                    <div class="section-block" data-min="1">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Resumo Profissional</h3>
+                        <p class="text-muted mb-0" contenteditable="true">
+                            Engenheiro de Software com mais de 4 anos de experiência no desenvolvimento e implementação de aplicações web escaláveis. Sólido domínio em tecnologias front-end e back-end, focado na criação de interfaces intuitivas e na otimização do desempenho de sistemas. Experiência comprovada em liderança de pequenas equipas e metodologias ágeis (Scrum/Kanban).
+                        </p>
+                    </div>
+
+                    <!-- Experiência Profissional -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Experiência Profissional</h3>
+
+                        <div id="experience-list">
+                            <div class="timeline-item">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold mb-0" contenteditable="true">Desenvolvedor Front-End Sénior</h5>
+                                    <span class="badge bg-light text-dark border" contenteditable="true">2023 - Presente</span>
+                                </div>
+                                <div class="text-muted small mb-2"><strong contenteditable="true">Empresa Tech Solutions</strong> | <span contenteditable="true">Luanda</span></div>
+                                <ul class="text-muted ps-3 small" contenteditable="true">
+                                    <li>Liderou a reformulação da plataforma e-commerce da empresa utilizando Bootstrap e JavaScript, resultando num aumento de 25% na taxa de conversão.</li>
+                                    <li>Otimizou o desempenho do site, reduzindo o tempo de carregamento das páginas em 40%.</li>
+                                </ul>
+                            </div>
+
+                            <div class="timeline-item">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold mb-0" contenteditable="true">Desenvolvedor Web Júnior</h5>
+                                    <span class="badge bg-light text-dark border" contenteditable="true">2021 - 2023</span>
+                                </div>
+                                <div class="text-muted small mb-2"><strong contenteditable="true">Global Systems Corp</strong> | <span contenteditable="true">Luanda</span></div>
+                                <ul class="text-muted ps-3 small" contenteditable="true">
+                                    <li>Desenvolveu e manteve mais de 15 sites responsivos para clientes de diversos setores.</li>
+                                    <li>Integração de APIs RESTful e manutenção de bancos de dados.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="add-inline-btn no-print" onclick="addExperience()"><i class="fa-solid fa-plus me-1"></i>Experiência</button>
+                    </div>
+
+                    <!-- Educação e Formação -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Educação</h3>
+
+                        <div id="education-list">
+                            <div class="timeline-item">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold mb-0" contenteditable="true">Licenciatura em Engenharia Informática</h5>
+                                    <span class="text-muted small" contenteditable="true">2017 - 2021</span>
+                                </div>
+                                <div class="text-muted small" contenteditable="true">Universidade Agostinho Neto</div>
+                            </div>
+                        </div>
+                        <button class="add-inline-btn no-print" onclick="addEducation()"><i class="fa-solid fa-plus me-1"></i>Formação</button>
+                    </div>
+
+                    <!-- Projetos de Destaque -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Projetos em Destaque</h3>
+
+                        <div id="projects-list">
+                            <div class="project-card">
+                                <button class="item-delete no-print" onclick="removeItem(this)">×</button>
+                                <div class="fw-bold" contenteditable="true">Sistema de Gestão Escolar (SaaS)</div>
+                                <p class="small text-muted mb-1" contenteditable="true">Plataforma desenvolvida para gestão de matrículas e notas em tempo real.</p>
+                                <span class="badge text-bg-light" contenteditable="true">Bootstrap</span>
+                                <span class="badge text-bg-light" contenteditable="true">Node.js</span>
+                            </div>
+                        </div>
+                        <button class="add-inline-btn no-print" onclick="addProject()"><i class="fa-solid fa-plus me-1"></i>Projeto</button>
+                    </div>
+
+                    <!-- Certificações -->
+                    <div class="section-block">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Certificações</h3>
+                        <ul class="list-unstyled text-muted small" id="certifications-list">
+                            <li class="mb-1 cert-item"><button class="item-delete no-print" onclick="removeItem(this)">×</button><i class="fa-solid fa-certificate text-warning me-2"></i><span contenteditable="true"><strong>Desenvolvimento Web Completo</strong> – Udemy (2023)</span></li>
+                            <li class="mb-1 cert-item"><button class="item-delete no-print" onclick="removeItem(this)">×</button><i class="fa-solid fa-certificate text-warning me-2"></i><span contenteditable="true"><strong>Scrum Fundamentals Certified (SFC)</strong> – SCRUMstudy (2022)</span></li>
+                        </ul>
+                        <button class="add-inline-btn no-print" onclick="addCertification()"><i class="fa-solid fa-plus me-1"></i>Certificação</button>
+                    </div>
+
+                    <!-- Referências -->
+                    <div class="section-block" id="references-section">
+                        <button class="section-delete no-print" onclick="removeSection(this)" title="Remover secção">×</button>
+                        <h3 class="section-title">Referências Profissionais</h3>
+                        <p class="text-muted small fst-italic mb-0" contenteditable="true">Disponíveis mediante solicitação.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- =========================================================
+         APLICAÇÃO 2: CARTA DE APRESENTAÇÃO
+    ========================================================= -->
+    <div id="app-letter" class="app-view" style="display:none;">
+    <div class="container">
+        <div class="letter-card" id="letter-root">
+
+            <div class="letter-header">
+                <div class="letter-sender">
+                    <h2 contenteditable="true">SEU NOME COMPLETO</h2>
+                    <p contenteditable="true">Desenvolvedor Web Full Stack</p>
+                    <p contenteditable="true">email.profissional@exemplo.com | +244 923 000 000</p>
+                    <p contenteditable="true">Luanda, Angola</p>
+                </div>
+                <div class="letter-date" contenteditable="true">Luanda, 24 de julho de 2026</div>
+            </div>
+
+            <div class="letter-recipient" contenteditable="true">
+                Ex.mo(a) Senhor(a)<br>
+                Responsável de Recrutamento<br>
+                Nome da Empresa<br>
+                Endereço da Empresa, Cidade
+            </div>
+
+            <div class="letter-subject" contenteditable="true">Assunto: Candidatura à vaga de Desenvolvedor Web Full Stack</div>
+
+            <div class="letter-body" id="letter-body">
+                <p class="letter-para" contenteditable="true">Exmo(a). Senhor(a), venho por meio desta manifestar o meu interesse na vaga de [cargo] anunciada por [empresa/canal]. Com mais de 4 anos de experiência em desenvolvimento web, acredito reunir as competências técnicas e a motivação necessárias para contribuir de forma significativa para a vossa equipa.</p>
+                <p class="letter-para" contenteditable="true">Ao longo do meu percurso profissional, tive a oportunidade de liderar projetos de reformulação de plataformas, otimizar o desempenho de sistemas e colaborar em equipas ágeis, entregando soluções que geraram impacto real nos resultados da empresa. Estas experiências desenvolveram em mim uma forte capacidade de resolução de problemas e de trabalho em equipa.</p>
+                <p class="letter-para" contenteditable="true">Estou disponível para uma entrevista a qualquer momento que seja conveniente, e agradeço desde já a atenção dispensada à minha candidatura. Fico ao dispor para esclarecer qualquer informação adicional que considerem necessária.</p>
+            </div>
+
+            <div class="letter-signature">
+                <p contenteditable="true">Com os melhores cumprimentos,</p>
+                <p class="sig-name" contenteditable="true">Seu Nome Completo</p>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <!-- Painel flutuante para escolher ícone (não imprime / não exporta) -->
+    <div id="icon-picker" class="no-print"></div>
