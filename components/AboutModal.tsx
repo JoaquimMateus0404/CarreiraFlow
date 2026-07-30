@@ -113,19 +113,19 @@ export default function AboutModal() {
               </p>
               <div className="support-field">
                 <span className="support-label">IBAN</span>
-                <span  suppressContentEditableWarning>
-                  AO06 0000 0000 0000 0000 0000 0
+                <span >
+                  AO06 0040 0000 9253 0826 1024 6
                 </span>
               </div>
               <div className="support-field">
                 <span className="support-label">Nº de Conta</span>
-                <span  suppressContentEditableWarning>
+                <span >
                   19253082610001
                 </span>
               </div>
               <div className="support-field">
                 <span className="support-label">Multicaixa Express</span>
-                <span  suppressContentEditableWarning>
+                <span  >
                  933 855 723
                 </span>
               </div>
