@@ -3,17 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-/**
- * Seletor de ícones (Contato / Informações Pessoais / Idiomas).
- * Quarta peça convertida de public/app.js.
- *
- * Ponte com o resto da app (ainda em JS puro): cada ícone editável no
- * currículo continua a ter onclick="openIconPicker(this,event)" — essa
- * função (em app.js) agora só despacha o evento "open-icon-picker" com
- * o elemento clicado e a posição calculada. Este componente escuta esse
- * evento e desenha-se dentro do <div id="icon-picker"> que já existe no
- * HTML (usado aqui como alvo do portal do React).
- */
+
 
 const ICON_OPTIONS = [
   "fa-solid fa-envelope", "fa-solid fa-phone", "fa-solid fa-mobile-screen",

@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-/**
- * Seletor de Modelo (layout do Currículo). Terceira peça convertida de
- * public/app.js. Usa portal para desenhar dentro de
- * <span id="template-switcher-slot"> na barra de ferramentas.
- */
+
 
 type TemplateOption = {
   key: string;

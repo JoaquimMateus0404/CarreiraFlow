@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-/**
- * Seletor de Tema (cores). Segunda peça convertida de public/app.js.
- *
- * Este componente não tem markup próprio no HTML — usa um "portal" do
- * React para se desenhar dentro do slot <span id="theme-switcher-slot">
- * que já existe na barra de ferramentas (em content/app-body.html).
- */
+
 
 type ThemeVars = {
   primary: string;

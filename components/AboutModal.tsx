@@ -2,18 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-/**
- * Modal "Sobre / Apoiar este projeto".
- *
- * Primeira peça convertida de public/app.js para um componente React real.
- *
- * Ponte com o resto da aplicação (ainda em JavaScript puro):
- * o botão "Sobre" na barra de ferramentas continua em HTML/JS normal e
- * chama `openAboutModal()` (definida em public/app.js), que agora apenas
- * despacha o evento do browser "open-about-modal". Este componente ouve
- * esse evento — assim não precisámos de tocar no botão nem no resto do
- * app.js para este primeiro passo.
- */
+
 
 const ABOUT_SEEN_KEY = "cvbuilder_hide_about";
 

@@ -2,21 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-/**
- * Modal "Rascunhos guardados". Quinta peça convertida de public/app.js —
- * a mais complexa até agora (lê/escreve localStorage, lista itens
- * dinamicamente, sabe carregar/apagar/exportar/importar).
- *
- * Pontes com o resto da app (ainda em JS puro):
- * - O botão "Rascunhos" na barra de ferramentas chama openDraftsModal()
- *   (em app.js), que agora só despacha o evento "open-drafts-modal".
- * - Para trocar de separador (Currículo/Carta) ao carregar um rascunho,
- *   chamamos diretamente window.switchApp(...) — funciona porque app.js
- *   é um <script> clássico (não um módulo), por isso as suas funções de
- *   topo ficam automaticamente acessíveis em `window`.
- * - Para saber qual documento está ativo agora, lemos window.currentApp
- *   (também exposta por app.js dentro de switchApp()).
- */
+
 
 type DocType = "cv" | "letter";
 
